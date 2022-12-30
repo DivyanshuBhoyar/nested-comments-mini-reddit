@@ -1,14 +1,24 @@
 import { Routes, Route } from "react-router-dom";
 import reactLogo from "./assets/react.svg";
+
 import "./App.css";
 import { PostList } from "./components/PostList";
+import Post from "./components/Post";
+import { PostProvider } from "./contexts/PostContext";
 
 function App() {
   return (
     <div className="container">
       <Routes>
         <Route path="/" element={<PostList />} />
-        <Route path="/posts/:id" element={null} />
+        <Route
+          path="/posts/:id"
+          element={
+            <PostProvider>
+              <Post />
+            </PostProvider>
+          }
+        />
       </Routes>
     </div>
   );

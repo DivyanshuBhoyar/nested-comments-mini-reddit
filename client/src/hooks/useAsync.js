@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 
+// execute function will auto called initially
 export function useAsync(func, dependencies = []) {
-  const { execute, ...state } = useAsyncInternal(func, dependencies, true); // initial loading is set true
+  const { exec, ...state } = useAsyncInternal(func, dependencies, true); // initial loading is set true
 
+  // 1. Change in dependencies updates the execute() callback function
+  // 2. This updated function as a dependency to to useEffect will auto call it when updated. , eg change in ID
+  // 3. implies it also auto run initially.
   useEffect(() => {
-    execute();
-  }, [execute]);
+    exec();
+  }, [exec]);
+
   return state;
 }
 
@@ -19,7 +24,7 @@ const useAsyncInternal = (func, dependencies, initialLoading = false) => {
   const [error, setError] = useState(false);
   const [value, setValue] = useState();
 
-  const exec = useCallback(({ ...params }) => {
+  const exec = useCallback((...params) => {
     setLoading(true);
     return func(...params)
       .then((data) => {
@@ -35,5 +40,6 @@ const useAsyncInternal = (func, dependencies, initialLoading = false) => {
       .finally(() => setLoading(false));
   }, dependencies);
 
-  return { loading, error, value, execute };
+  // execute function will get updated on change on dependencies and get returned
+  return { loading, error, value, exec };
 };

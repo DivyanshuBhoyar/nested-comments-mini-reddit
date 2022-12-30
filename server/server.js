@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import sensible from "@fastify/sensible";
 import cors from "@fastify/cors";
 
-import { getPostList } from "./utils.js";
+import { getPostList, getPost } from "./utils.js";
 dotenv.config();
 
 const app = fastify({ logger: false });
@@ -20,6 +20,16 @@ app.get("/posts", async (req, res) => {
   try {
     const posts = await getPostList();
     res.send(posts);
+  } catch (e) {
+    return app.httpErrors.internalServerError(e.message);
+  }
+});
+
+app.get("/posts/:id", async (req, res) => {
+  try {
+    const post = await getPost(req.params.id);
+    console.log(post);
+    res.send(post);
   } catch (e) {
     return app.httpErrors.internalServerError(e.message);
   }
