@@ -1,0 +1,6 @@
+Start with the data models first
+
+Seed the database with the most basic model to start.
+
+Get basic routing on client side and build basic api svc/hooks
+useAsyncHooks
