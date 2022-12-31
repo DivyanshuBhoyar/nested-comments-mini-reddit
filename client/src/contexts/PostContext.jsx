@@ -1,12 +1,13 @@
-import { createContext, useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAsync } from "../hooks/useAsync";
+import { fetchSinglePost } from "../services/posts";
 
-import { useAsync } from "../hooks/useAsync.js";
-import { fetchSinglePost } from "../services/posts.js";
+const Context = React.createContext();
 
-const PostCtx = createContext();
-
-export const usePost = () => useContext(PostCtx);
+export function usePost() {
+  return useContext(Context);
+}
 
 export function PostProvider({ children }) {
   const { id } = useParams();
@@ -16,35 +17,92 @@ export function PostProvider({ children }) {
     value: post,
   } = useAsync(() => fetchSinglePost(id), [id]);
 
-  const commentByParentId = useMemo(() => {
-    if (post?.comments == null) return [];
+  const [comments, setComments] = useState([]);
+  const commentsByParentId = useMemo(() => {
     const group = {};
-    post.comments.forEach((comment) => {
+    comments.forEach((comment) => {
       group[comment.parentId] ||= [];
       group[comment.parentId].push(comment);
     });
     return group;
+  }, [comments]);
+
+  useEffect(() => {
+    if (post?.comments == null) return;
+    setComments(post.comments);
   }, [post?.comments]);
 
   function getReplies(parentId) {
-    return commentByParentId[parentId];
+    return commentsByParentId[parentId];
+  }
+
+  function createLocalComment(comment) {
+    setComments((prevComments) => {
+      return [comment, ...prevComments];
+    });
+  }
+
+  function updateLocalComment(id, message) {
+    setComments((prevComments) => {
+      return prevComments.map((comment) => {
+        if (comment.id === id) {
+          return { ...comment, message };
+        } else {
+          return comment;
+        }
+      });
+    });
+  }
+
+  function deleteLocalComment(id) {
+    setComments((prevComments) => {
+      return prevComments.filter((comment) => comment.id !== id);
+    });
+  }
+
+  function toggleLocalCommentLike(id, addLike) {
+    setComments((prevComments) => {
+      return prevComments.map((comment) => {
+        if (id === comment.id) {
+          if (addLike) {
+            return {
+              ...comment,
+              likeCount: comment.likeCount + 1,
+              likedByMe: true,
+            };
+          } else {
+            return {
+              ...comment,
+              likeCount: comment.likeCount - 1,
+              likedByMe: false,
+            };
+          }
+        } else {
+          return comment;
+        }
+      });
+    });
   }
 
   return (
-    <PostCtx.Provider
+    <Context.Provider
       value={{
-        post: { ...post, id },
-        rootComments: commentByParentId[null],
+        post: { id, ...post },
+        rootComments: commentsByParentId[null],
         getReplies,
+        createLocalComment,
+        updateLocalComment,
+        deleteLocalComment,
+        toggleLocalCommentLike,
       }}
     >
       {loading ? (
-        <h3>Loading... </h3>
+        <h1>Loading</h1>
       ) : error ? (
-        <h2 className="error-msg">{error}</h2>
+        <h1 className="error-msg">{error}</h1>
       ) : (
         children
       )}
-    </PostCtx.Provider>
+    </Context.Provider>
   );
 }

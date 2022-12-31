@@ -1,6 +1,6 @@
 import { prisma } from "./server.js";
 
-const COMMENT_SELECT_FIELDS = {
+export const COMMENT_SELECT_FIELDS = {
   id: true,
   message: true,
   parentId: true,

@@ -1,13 +1,12 @@
 import React from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Comment } from "./Comment";
 
-import Comment from "./Comment";
-
-const CommentList = ({ comments }) => {
+export const CommentList = ({ comments }) => {
+  const [parent] = useAutoAnimate();
   return comments.map((comment) => (
-    <div key={comment.id} className="comment-stack">
+    <div ref={parent} key={comment.id} className="comment-stack">
       <Comment {...comment} />
     </div>
   ));
 };
-
-export default CommentList;
