@@ -1,0 +1,20 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "shortMessage": "Command failed with exit code 1: /tmp/dlx-11143/bin/prisma generate",
+    "command": "/tmp/dlx-11143/bin/prisma generate",
+    "escapedCommand": "\"/tmp/dlx-11143/bin/prisma\" generate",
+    "exitCode": 1,
+    "failed": true,
+    "timedOut": false,
+    "isCanceled": false,
+    "killed": false,
+    "err": {
+      "name": "pnpm",
+      "message": "Command failed with exit code 1: /tmp/dlx-11143/bin/prisma generate",
+      "stack": "pnpm: Command failed with exit code 1: /tmp/dlx-11143/bin/prisma generate\n    at makeError (/home/divyanshu/.nvm/versions/node/v16.3.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpx.cjs:36810:17)\n    at handlePromise (/home/divyanshu/.nvm/versions/node/v16.3.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpx.cjs:37381:33)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async Object.handler [as dlx] (/home/divyanshu/.nvm/versions/node/v16.3.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpx.cjs:169998:7)\n    at async /home/divyanshu/.nvm/versions/node/v16.3.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpx.cjs:175391:21\n    at async run (/home/divyanshu/.nvm/versions/node/v16.3.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpx.cjs:175365:34)\n    at async /home/divyanshu/.nvm/versions/node/v16.3.0/pnpm-global/5/node_modules/.pnpm/pnpm@7.0.0/node_modules/pnpm/dist/pnpx.cjs:175437:5"
+    }
+  }
+}

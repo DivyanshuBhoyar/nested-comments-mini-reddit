@@ -1,0 +1,61 @@
+generator client {
+  provider  = "prisma-client-py"
+  interface = "asyncio"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev1.db"
+}
+
+model User {
+  id       String    @id @default(cuid())
+  email    String    @unique
+  password String?
+  name     String?
+  likes    Like[]
+  posts    Post[]
+  comments Comment[]
+}
+
+model Post {
+  id       String    @id @default(cuid())
+  title    String
+  body     String
+  comments Comment[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId   String?
+  userId   String?
+  parentId String?
+  likes    Like[]
+  // self join parentId is a key | relation name is used
+  children Comment[] @relation("ParentChild")
+  parent   Comment?  @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  post     Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// like table -- contains foreign keys userId and comment Id
+// and composite primary key
+model Like {
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id])
+
+  userId    String
+  commentId String
+
+  @@id([userId, commentId])
+}
